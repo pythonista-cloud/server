@@ -26,11 +26,12 @@ def submit():
     return "Data recieved: {}".format(flask.request.get_json(force=True))
 
 
-@app.route("/<filepath>/")
+@app.route("/<path:filepath>/")
 def returnFile(filepath):
     """ Attempt to return files from site from their equivalent path at the
-    root (/main.html -> /site/main.html) """
+    root (/main.html -> /static/main.html) """
     joined = os.path.join(staticdir, filepath)
+    print(joined)
     if os.path.isdir(joined):
         return flask.send_from_directory(joined, "index.html")
     else:
