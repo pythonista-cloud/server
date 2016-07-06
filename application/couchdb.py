@@ -75,5 +75,6 @@ def add_package(info):
     if "py_versions" not in info:
         info["py_versions"] = [2, 3]
     name = os.path.basename(info["url"].rstrip("/"))  # Package name from GH
+    info["name"] = name
     _add_document(name, info).raise_for_status()  # If there's an error, throw
     return info
