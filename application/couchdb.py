@@ -1,3 +1,4 @@
+"""Utilities for working with the CouchDB used by pythonista.cloud"""
 import os
 import urllib.parse
 

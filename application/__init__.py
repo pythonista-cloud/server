@@ -5,6 +5,8 @@ import os.path
 
 import flask
 
+from application import couchdb
+
 localdir = os.path.abspath(os.path.dirname(__file__))
 staticdir = os.path.join(localdir, "../static")
 
@@ -33,6 +35,3 @@ def returnFile(filepath):
         return flask.send_from_directory(joined, "index.html")
     else:
         return flask.send_from_directory(staticdir, filepath)
-
-if __name__ == "__main__":
-    app.run(debug=True)
