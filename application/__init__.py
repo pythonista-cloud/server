@@ -22,8 +22,39 @@ def index():
 
 @app.route("/", methods=["POST"])
 def submit():
-    """ Allow submission of new packages via a POST request """
-    return "Data recieved: {}".format(flask.request.get_json(force=True))
+    """Allow submission of new packages via a POST request.
+
+    This automatically raises intelligent-ish errors"""
+    # Parse JSON of request
+    data = flask.request.get_json(force=True, silent=True)
+    if data is None:  # If data is none, it fails
+        return flask.jsonify(**{
+            "success": False,
+            "error": {
+                "type": "ValueError",
+                "message": "Could not parse JSON"
+            }
+        })
+
+    # Add to index
+    try:
+        info = couchdb.add_package(data)
+    except Exception as e:
+        return flask.jsonify(**{
+            "success": False,
+            "error": {
+                "type": type(e).__name__,
+                # HTTPError doesn't have a message, so return the status code.
+                "message": str(e)
+            }
+        })
+
+    # Report success
+    return flask.jsonify(**{
+        "success": True,
+        "url": "http://db.pythonista.cloud/{}".format(info["name"]),
+        "data": info
+    })
 
 
 @app.route("/<path:filepath>/")
