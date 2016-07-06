@@ -68,13 +68,18 @@ def strip_package(info):
 
 def add_package(info):
     """Add a package to the database from JSON data."""
-    # Validate the package and strip it down
+    # Strip down the package to include only valid keys
     info = strip_package(info)
-    validate_package(info)  # This will raise an error if anything is wrong
+
     # Infer some data and set default values
     if "py_versions" not in info:
         info["py_versions"] = [2, 3]
     name = os.path.basename(info["url"].rstrip("/"))  # Package name from GH
     info["name"] = name
+
+    # Validate the package
+    validate_package(info)  # This will raise an error if anything is wrong
+
+    # Add the package to the index
     _add_document(name, info).raise_for_status()  # If there's an error, throw
     return info
