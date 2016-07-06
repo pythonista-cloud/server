@@ -1,4 +1,5 @@
 """Utilities for working with the CouchDB used by pythonista.cloud."""
+import keyword
 import os
 import urllib.parse
 
@@ -63,6 +64,10 @@ def validate_package(info):
         raise ValueError("That's not a GitHub repo!")
     r = requests.get(url)
     r.raise_for_status()
+
+    # Confirm that the package name is not the name of a Python keyword
+    if info["name"] in keyword.kwlist:
+        raise ValueError("Module name cannot be a Python built-in name")
 
 
 def strip_package(info):
