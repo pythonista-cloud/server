@@ -1,4 +1,4 @@
-"""Utilities for working with the CouchDB used by pythonista.cloud"""
+"""Utilities for working with the CouchDB used by pythonista.cloud."""
 import os
 import urllib.parse
 
@@ -14,7 +14,6 @@ MAIN_DB = "pythonista-cloud"
 PACKAGE_SCHEMA = {
     "type": "object",
     "properties": {
-        "name": {"type": "string"},
         "url": {"type": "string"},
         "entry_point": {"type": "string"},
         "py_versions": {
@@ -25,7 +24,6 @@ PACKAGE_SCHEMA = {
         }
     },
     "required": [
-        "name",
         "url",
         "entry_point"
     ]
@@ -34,7 +32,7 @@ PACKAGE_VALID_KEYS = PACKAGE_SCHEMA["properties"].keys()
 
 
 def _add_document(name, data, database=MAIN_DB):
-    """ Add a document to a database """
+    """Add a document to a database."""
     return requests.put(
         os.path.join(COUCH_URL, database, name),
         json=data,
@@ -43,7 +41,12 @@ def _add_document(name, data, database=MAIN_DB):
 
 
 def validate_package(info):
-    """ Verify that package JSON is valid """
+    """Verify that package JSON is valid.
+
+    Validates:
+      - Type of each key
+      - That the URL is a GitHub repo
+    """
     # Confirm general structure and types
     jsonschema.Draft4Validator(PACKAGE_SCHEMA).validate(info)
     url = info["url"]
@@ -59,19 +62,18 @@ def validate_package(info):
 
 
 def strip_package(info):
-    """ Remove suprerfluous keys from package JSON """
+    """Remove suprerfluous keys from package JSON."""
     return {k: v for k, v in info.items() if k in PACKAGE_VALID_KEYS}
 
 
 def add_package(info):
-    """ Add a package to the database from JSON """
-    name = info["name"]
-
+    """Add a package to the database from JSON data."""
+    # Validate the package and strip it down
     info = strip_package(info)
     validate_package(info)  # This will raise an error if anything is wrong
-
+    # Infer some data and set default values
     if "py_versions" not in info:
         info["py_versions"] = [2, 3]
-
+    name = os.path.basename(info["url"].rstrip("/"))  # Package name from GH
     _add_document(name, info).raise_for_status()  # If there's an error, throw
     return True
