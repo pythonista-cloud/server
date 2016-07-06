@@ -21,6 +21,10 @@ PACKAGE_SCHEMA = {
             "items": {
                 "type": "integer"
             }
+        },
+        "name": {
+            "type": "string",
+            "pattern": "[A-Za-z_][A-Za-z0-9_]*"
         }
     },
     "required": [
