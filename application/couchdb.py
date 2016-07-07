@@ -66,7 +66,7 @@ def validate_package(info):
     r.raise_for_status()
 
     # Confirm that the package name is not the name of a Python keyword
-    if info["name"] in keyword.kwlist:
+    if keyword.iskeyword(info["name"]):
         raise ValueError("Module name cannot be a Python built-in name")
 
 
