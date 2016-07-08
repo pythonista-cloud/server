@@ -1,6 +1,6 @@
 # pythonista.cloud Server
 This package manages the index of modules. Most of the heavy lifting is done by [`CouchDB`](https://couchdb.apache.org), but the server still contains:
-- the entire [website](http://pythonista.cloud/)
+- Code for submitting packages
 - A Python script that enforces the structure of packages as they are submitted.
 
 ### Package structure
