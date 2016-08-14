@@ -29,6 +29,7 @@ PACKAGE_SCHEMA = {
         }
     },
     "required": [
+        "name",
         "url",
         "entry_point"
     ]
@@ -36,10 +37,10 @@ PACKAGE_SCHEMA = {
 PACKAGE_VALID_KEYS = PACKAGE_SCHEMA["properties"].keys()
 
 
-def _add_document(name, data, database=MAIN_DB):
+def _add_document(doc_id, data, database=MAIN_DB):
     """Add a document to a database."""
     return requests.put(
-        os.path.join(COUCH_URL, database, name),
+        os.path.join(COUCH_URL, database, doc_id),
         json=data,
         headers={"Content-Type": "application/json"}
     )
@@ -83,12 +84,10 @@ def add_package(info):
     # Infer some data and set default values
     if "py_versions" not in info:
         info["py_versions"] = [2, 3]
-    name = os.path.basename(info["url"].rstrip("/"))  # Package name from GH
-    info["name"] = name
 
     # Validate the package
     validate_package(info)  # This will raise an error if anything is wrong
 
-    # Add the package to the index
-    _add_document(name, info).raise_for_status()  # If there's an error, throw
+    # Add the package to the index, raising any errors
+    _add_document(info, info["name"]).raise_for_status()
     return info
