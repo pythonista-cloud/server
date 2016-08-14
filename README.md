@@ -1,4 +1,5 @@
-# pythonista.cloud Server
+# pythonista.cloud Server [![Build Status](https://travis-ci.org/pythonista-cloud/server.svg?branch=master)](https://travis-ci.org/pythonista-cloud/server) [![Coverage Status](https://coveralls.io/repos/github/pythonista-cloud/server/badge.svg?branch=master)](https://coveralls.io/github/pythonista-cloud/server?branch=master)
+
 This package manages the index of modules. Most of the heavy lifting is done by [`CouchDB`](https://couchdb.apache.org), but the server still contains:
 - Code for submitting packages
 - A Python script that enforces the structure of packages as they are submitted.
